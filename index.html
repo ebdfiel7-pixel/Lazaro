@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz EBD Fiel - Lição 10: Pedro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --easy: #27ae60;
+            --medium: #f39c12;
+            --hard: #e74c3c;
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --text: #34495e;
+            --shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        /* Área da Logo CENTRALIZADA */
+        .logo-container {
+            text-align: center;
+            padding: 20px 0 0 0;
+            z-index: 100;
+        }
+
+        .logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border: 3px solid white;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        .logo-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 10px;
+            background: white;
+        }
+
+        .logo-fallback {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.8rem;
+            color: var(--primary);
+            width: 100%;
+            height: 100%;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 20px 40px 40px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-size: 2.3rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .welcome-message {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-size: 1.1rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .start-btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            background: var(--easy);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            margin: 20px auto 0;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            background: var(--medium);
+        }
+
+        .quiz-info {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+            font-size: 1rem;
+        }
+
+        .quiz-section {
+            display: none;
+            padding: 30px;
+        }
+
+        .question {
+            margin-bottom: 30px;
+            padding: 25px;
+            border-radius: 15px;
+            background: white;
+            box-shadow: var(--shadow);
+            border-left: 5px solid var(--secondary);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .question-difficulty {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .difficulty-easy { background: var(--easy); }
+        .difficulty-medium { background: var(--medium); }
+        .difficulty-hard { background: var(--hard); }
+
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .option {
+            padding: 18px 20px;
+            background: var(--light);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            border: 2px solid transparent;
+            position: relative;
+        }
+
+        .option:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* FEEDBACK IMEDIATO NAS RESPOSTAS */
+        .option.selected.correct {
+            background: var(--easy);
+            color: white;
+            border-color: var(--easy);
+            transform: translateY(-2px);
+        }
+
+        .option.selected.incorrect {
+            background: var(--hard);
+            color: white;
+            border-color: var(--hard);
+            transform: translateY(-2px);
+        }
+
+        .option.correct-answer {
+            background: var(--easy);
+            color: white;
+            border-color: var(--easy);
+            animation: pulse 0.6s ease;
+        }
+
+        .option-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+
+        .option.selected .option-letter,
+        .option.correct-answer .option-letter {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* Ícones de feedback */
+        .feedback-icon {
+            margin-left: auto;
+            font-size: 1.2rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .option.selected.correct .feedback-icon,
+        .option.correct-answer .feedback-icon {
+            opacity: 1;
+        }
+
+        .option.selected.incorrect .feedback-icon {
+            opacity: 1;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            background: var(--primary);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        button:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-next {
+            background: var(--secondary);
+        }
+
+        .results {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+
+        .score {
+            font-size: 4rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 20px 0;
+        }
+
+        .performance {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .performance-item {
+            text-align: center;
+            padding: 20px;
+            border-radius: 15px;
+            background: var(--light);
+            min-width: 150px;
+        }
+
+        .performance-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .performance-easy { color: var(--easy); }
+        .performance-medium { color: var(--medium); }
+        .performance-hard { color: var(--hard); }
+
+        .message {
+            font-size: 1.3rem;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 15px;
+            background: var(--light);
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--light);
+            border-radius: 3px;
+            margin: 20px 30px 0;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: var(--secondary);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .church-info {
+            text-align: center;
+            padding: 20px;
+            background: var(--light);
+            border-top: 1px solid #ddd;
+        }
+
+        .church-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .church-location {
+            color: var(--text);
+            opacity: 0.8;
+        }
+
+        .logo-status {
+            background: var(--success);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-top: 5px;
+            display: inline-block;
+        }
+
+        /* MÍNIMA ALTERAÇÃO - Apenas para opções bloqueadas */
+        .option.locked {
+            cursor: not-allowed;
+        }
+
+        .option.locked:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Animações */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .bounce {
+            animation: bounce 0.6s;
+        }
+
+        @media (max-width: 768px) {
+            .performance {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .question-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .logo {
+                width: 80px;
+                height: 80px;
+            }
+
+            header {
+                padding: 15px 20px 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container fade-in">
+        <!-- ÁREA DA LOGO CENTRALIZADA -->
+        <div class="logo-container">
+            <div class="logo">
+                <!-- SUA LOGO DO IMGBB -->
+                <img src="https://i.ibb.co/9mLXgx7k/logo.png" alt="Logo EBD Fiel" class="logo-img" id="logo-img">
+                <!-- FALLBACK CASO A IMAGEM NÃO CARREGUE -->
+                <div class="logo-fallback" id="logo-fallback">
+                    <i class="fas fa-book-bible"></i>
+                </div>
+            </div>
+            <div class="logo-status" id="logo-status" style="display: none;">
+                <i class="fas fa-check"></i> Logo Carregada
+            </div>
+        </div>
+
+        <header>
+            <div class="header-content">
+                <h1><i class="fas fa-crown"></i> Quiz Bíblico - EBD Fiel</h1>
+                <div class="subtitle">Lição 10: Pedro - Deus Transforma Impulsos em Missão</div>
+                
+                <div class="welcome-message">
+                    <i class="fas fa-hands"></i> 
+                    <strong>Seja bem-vindo ao Quiz da EBD Fiel!</strong><br>
+                    Hoje sobre a Lição 10 - Pedro: Deus transforma impulsos em missão
+                </div>
+
+                <button class="start-btn" id="start-btn">
+                    <i class="fas fa-play"></i> Iniciar Quiz
+                </button>
+                
+                <div class="quiz-info">
+                    <div class="info-item">
+                        <i class="fas fa-star" style="color: var(--easy);"></i>
+                        <span><strong>Quiz Completo:</strong> 15 perguntas sobre Pedro</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-check-circle" style="color: var(--medium);"></i>
+                        <span><strong>Feedback Imediato:</strong> Saiba na hora se acertou ou errou</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-graduation-cap" style="color: var(--hard);"></i>
+                        <span><strong>Objetivo:</strong> Aprender sobre a transformação de Pedro</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <div class="quiz-section" id="quiz-section">
+            <div class="progress-bar">
+                <div class="progress" id="quiz-progress"></div>
+            </div>
+            
+            <div class="quiz-container" id="quiz-container">
+                <!-- Perguntas serão inseridas aqui -->
+            </div>
+            
+            <div class="navigation">
+                <button id="prev-btn" disabled>
+                    <i class="fas fa-arrow-left"></i> Anterior
+                </button>
+                <button id="next-btn" class="btn-next">
+                    Próxima <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="results" id="results">
+            <h2><i class="fas fa-trophy"></i> Resultado Final</h2>
+            <div class="score" id="score">0/0</div>
+            
+            <div class="performance" id="performance">
+                <div class="performance-item">
+                    <div class="performance-value" id="correct-easy">0</div>
+                    <div>Fáceis</div>
+                </div>
+                <div class="performance-item">
+                    <div class="performance-value" id="correct-medium">0</div>
+                    <div>Médias</div>
+                </div>
+                <div class="performance-item">
+                    <div class="performance-value" id="correct-hard">0</div>
+                    <div>Difíceis</div>
+                </div>
+            </div>
+            
+            <div class="message" id="message"></div>
+            
+            <button id="restart-btn" style="background: var(--easy);">
+                <i class="fas fa-redo"></i> Fazer Quiz Novamente
+            </button>
+        </div>
+
+        <!-- Informações da Igreja -->
+        <div class="church-info">
+            <div class="church-name" id="church-name">EBD FIEL</div>
+            <div class="church-location" id="church-location">FIEL A PALAVRA</div>
+        </div>
+    </div>
+
+    <script>
+        // =============================================
+        // CONFIGURAÇÃO DA LOGO E INFORMAÇÕES DA IGREJA
+        // =============================================
+        
+        // 1. CONFIGURAÇÃO DA LOGO - SUA LOGO DO IMGBB
+        const logoConfig = {
+            imageUrl: "https://i.ibb.co/9mLXgx7k/logo.png",
+            fallbackText: "EBD"
+        };
+
+        // 2. INFORMAÇÕES DA IGREJA
+        const churchInfo = {
+            name: "EBD FIEL",
+            location: "FIEL A PALAVRA"
+        };
+
+        // =============================================
+        // BANCO DE PERGUNTAS SOBRE PEDRO
+        // =============================================
+        
+        const allQuestions = [
+            // PERGUNTAS FÁCEIS
+            {
+                question: "Qual era o nome original de Pedro antes de Jesus mudá-lo?",
+                options: [
+                    "André",
+                    "João", 
+                    "Simão",
+                    "Tiago"
+                ],
+                correct: 2,
+                explanation: "Pedro era originalmente chamado de Simão. Jesus mudou seu nome para Pedro, que significa 'rocha'.",
+                difficulty: "easy"
+            },
+            {
+                question: "Qual era a profissão de Pedro antes de seguir Jesus?",
+                options: [
+                    "Carpinteiro",
+                    "Agricultor",
+                    "Pescador",
+                    "Cobrador de impostos"
+                ],
+                correct: 2,
+                explanation: "Pedro era pescador no mar da Galileia junto com seu irmão André.",
+                difficulty: "easy"
+            },
+            {
+                question: "Quantas vezes Pedro negou Jesus antes do galo cantar?",
+                options: [
+                    "Uma vez",
+                    "Duas vezes",
+                    "Três vezes",
+                    "Quatro vezes"
+                ],
+                correct: 2,
+                explanation: "Pedro negou Jesus três vezes, conforme predito pelo próprio Jesus.",
+                difficulty: "easy"
+            },
+            {
+                question: "O que Pedro fez quando viu Jesus andando sobre as águas?",
+                options: [
+                    "Ficou com medo e se escondeu",
+                    "Pediu para também andar sobre as águas",
+                    "Começou a gritar de alegria",
+                    "Não acreditou que era Jesus"
+                ],
+                correct: 1,
+                explanation: "Pedro pediu para Jesus permitir que ele também andasse sobre as águas.",
+                difficulty: "easy"
+            },
+            {
+                question: "Qual foi a resposta de Pedro quando Jesus perguntou 'Quem dizeis que eu sou?'",
+                options: [
+                    "És João Batista",
+                    "És Elias",
+                    "És o Cristo, o Filho do Deus vivo",
+                    "És um grande profeta"
+                ],
+                correct: 2,
+                explanation: "Pedro declarou que Jesus era 'o Cristo, o Filho do Deus vivo'.",
+                difficulty: "easy"
+            },
+            
+            // PERGUNTAS MÉDIAS
+            {
+                question: "O que Pedro fez quando Jesus foi preso no Getsêmani?",
+                options: [
+                    "Fugiu com os outros discípulos",
+                    "Cortou a orelha de um servo do sumo sacerdote",
+                    "Tentou negociar com os soldados",
+                    "Escondeu-se entre as árvores"
+                ],
+                correct: 1,
+                explanation: "Pedro cortou a orelha de Malco, servo do sumo sacerdote, com uma espada.",
+                difficulty: "medium"
+            },
+            {
+                question: "Em que ocasião Pedro declarou: 'Para onde iremos? Só tu tens palavras de vida eterna'?",
+                options: [
+                    "Quando Jesus andou sobre as águas",
+                    "Quando muitos discípulos abandonaram Jesus",
+                    "Na transfiguração",
+                    "Após a ressurreição de Jesus"
+                ],
+                correct: 1,
+                explanation: "Pedro fez essa declaração quando muitos seguidores abandonaram Jesus após o discurso sobre o pão da vida.",
+                difficulty: "medium"
+            },
+            {
+                question: "Qual milagre Pedro realizou no início do livro de Atos, à porta do templo chamada Formosa?",
+                options: [
+                    "Curou um cego",
+                    "Ressuscitou uma criança",
+                    "Curou um coxo",
+                    "Expulsou um demônio"
+                ],
+                correct: 2,
+                explanation: "Pedro curou um homem coxo à porta do templo chamada Formosa.",
+                difficulty: "medium"
+            },
+            {
+                question: "Qual foi a visão que Pedro teve em Jope que mudou sua compreensão sobre os gentios?",
+                options: [
+                    "Um anjo com uma espada flamejante",
+                    "Um lençol cheio de animais impuros",
+                    "Uma escada que chegava ao céu",
+                    "Um livro aberto com sete selos"
+                ],
+                correct: 1,
+                explanation: "Pedro teve uma visão de um lençol cheio de animais impuros, indicando que não deveria considerar impuro o que Deus purificou.",
+                difficulty: "medium"
+            },
+            {
+                question: "Quem Pedro ressuscitou em Jope?",
+                options: [
+                    "Lázaro",
+                    "O filho da viúva de Naim",
+                    "Tabita (Dorcas)",
+                    "Êutico"
+                ],
+                correct: 2,
+                explanation: "Pedro ressuscitou Tabita (também chamada Dorcas), uma discípula conhecida por suas boas obras.",
+                difficulty: "medium"
+            },
+            
+            // PERGUNTAS DIFÍCEIS
+            {
+                question: "Em qual epístola Pedro escreve sobre o cuidado com os 'impulsos da carne'?",
+                options: [
+                    "1ª Pedro",
+                    "2ª Pedro",
+                    "Ambas as epístolas",
+                    "Nem uma nem outra"
+                ],
+                correct: 1,
+                explanation: "Na 2ª Pedro 1:5-9, ele fala sobre dominar os impulsos e desenvolver virtudes cristãs.",
+                difficulty: "hard"
+            },
+            {
+                question: "Qual foi o primeiro milagre de Pedro registrado no livro de Atos?",
+                options: [
+                    "A cura do coxo na porta Formosa",
+                    "A cura de Enéias em Lida",
+                    "A ressurreição de Tabita",
+                    "A conversão de Cornélio"
+                ],
+                correct: 0,
+                explanation: "O primeiro milagre registrado de Pedro foi a cura do homem coxo na porta do templo chamada Formosa (Atos 3:1-10).",
+                difficulty: "hard"
+            },
+            {
+                question: "Quantas cartas (epístolas) de Pedro estão no Novo Testamento?",
+                options: [
+                    "Uma",
+                    "Duas",
+                    "Três",
+                    "Quatro"
+                ],
+                correct: 1,
+                explanation: "Há duas epístolas de Pedro no Novo Testamento: 1ª Pedro e 2ª Pedro.",
+                difficulty: "hard"
+            },
+            {
+                question: "Onde Pedro estava quando recebeu a visão do lençol com animais impuros?",
+                options: [
+                    "Jerusalém",
+                    "Antioquia",
+                    "Jope",
+                    "Cesareia"
+                ],
+                correct: 2,
+                explanation: "Pedro estava em Jope, na casa de Simão, o curtidor, quando teve a visão do lençol.",
+                difficulty: "hard"
+            },
+            {
+                question: "Qual destes NÃO foi um dos discípulos que Pedro viu com Jesus no Monte da Transfiguração?",
+                options: [
+                    "João",
+                    "Tiago",
+                    "André",
+                    "Nenhuma das anteriores"
+                ],
+                correct: 2,
+                explanation: "Pedro, Tiago e João foram os três discípulos que testemunharam a transfiguração de Jesus. André não estava presente.",
+                difficulty: "hard"
+            }
+        ];
+
+        // =============================================
+        // CÓDIGO DO QUIZ - MODIFICADO PARA BLOQUEAR VOLTAR
+        // =============================================
+
+        // Variáveis globais
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let score = 0;
+        let correctByDifficulty = { easy: 0, medium: 0, hard: 0 };
+        let answerSelected = false;
+        let answeredQuestions = new Set(); // Controla perguntas já respondidas
+
+        // Elementos DOM
+        const startBtn = document.getElementById('start-btn');
+        const quizSection = document.getElementById('quiz-section');
+        const quizContainer = document.getElementById('quiz-container');
+        const resultsSection = document.getElementById('results');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const scoreElement = document.getElementById('score');
+        const messageElement = document.getElementById('message');
+        const progressBar = document.getElementById('quiz-progress');
+        const logoImg = document.getElementById('logo-img');
+        const logoFallback = document.getElementById('logo-fallback');
+        const logoStatus = document.getElementById('logo-status');
+        const churchNameEl = document.getElementById('church-name');
+        const churchLocationEl = document.getElementById('church-location');
+        const correctEasyEl = document.getElementById('correct-easy');
+        const correctMediumEl = document.getElementById('correct-medium');
+        const correctHardEl = document.getElementById('correct-hard');
+
+        // Função para embaralhar array (Fisher-Yates)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Função para mostrar fallback se a logo não carregar
+        function showLogoFallback() {
+            logoImg.style.display = 'none';
+            logoFallback.style.display = 'flex';
+            logoStatus.style.display = 'none';
+        }
+
+        // Função para mostrar sucesso no carregamento
+        function showLogoSuccess() {
+            logoStatus.style.display = 'block';
+            logoStatus.innerHTML = '<i class="fas fa-check"></i> Logo Carregada';
+            logoStatus.style.background = '#27ae60';
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurar informações da igreja
+            setupChurchInfo();
+            
+            // Configurar event listeners
+            startBtn.addEventListener('click', startQuiz);
+            prevBtn.addEventListener('click', goToPreviousQuestion);
+            nextBtn.addEventListener('click', goToNextQuestion);
+            restartBtn.addEventListener('click', restartQuiz);
+
+            // Verificar se a logo carregou
+            logoImg.addEventListener('load', function() {
+                console.log('✅ Logo carregada com sucesso!');
+                showLogoSuccess();
+            });
+
+            logoImg.addEventListener('error', function() {
+                console.log('❌ Erro ao carregar logo, usando fallback...');
+                showLogoFallback();
+            });
+
+            // Verificar se a imagem carregou após 2 segundos
+            setTimeout(function() {
+                if (logoImg.naturalHeight === 0) {
+                    console.log('⏰ Timeout: Logo não carregou');
+                    showLogoFallback();
+                }
+            }, 2000);
+        });
+
+        function setupChurchInfo() {
+            churchNameEl.textContent = churchInfo.name;
+            churchLocationEl.textContent = churchInfo.location;
+        }
+
+        function startQuiz() {
+            // Embaralhar todas as perguntas
+            currentQuestions = shuffleArray([...allQuestions]);
+            currentQuestionIndex = 0;
+            userAnswers = new Array(currentQuestions.length).fill(-1);
+            score = 0;
+            correctByDifficulty = { easy: 0, medium: 0, hard: 0 };
+            answerSelected = false;
+            answeredQuestions.clear(); // Limpar perguntas respondidas
+            
+            // Mostrar seção do quiz
+            quizSection.style.display = 'block';
+            document.querySelector('header').style.padding = '20px 40px 30px 40px';
+            
+            showCurrentQuestion();
+        }
+
+        function showCurrentQuestion() {
+            const question = currentQuestions[currentQuestionIndex];
+            const difficultyClass = `difficulty-${question.difficulty}`;
+            const difficultyText = question.difficulty === 'easy' ? 'Fácil' : 
+                                 question.difficulty === 'medium' ? 'Médio' : 'Difícil';
+            
+            // Verificar se a pergunta já foi respondida
+            const isAnswered = answeredQuestions.has(currentQuestionIndex);
+            
+            let optionsHTML = '';
+            question.options.forEach((option, index) => {
+                const isSelected = userAnswers[currentQuestionIndex] === index;
+                const isCorrect = index === question.correct;
+                let optionClass = 'option';
+                
+                // Se a pergunta já foi respondida, bloquear as opções
+                if (isAnswered) {
+                    optionClass += ' locked';
+                }
+                
+                if (isSelected) {
+                    optionClass += isCorrect ? ' selected correct' : ' selected incorrect';
+                }
+                
+                // Adicionar ícone de feedback
+                const feedbackIcon = isSelected ? 
+                    (isCorrect ? '<i class="fas fa-check feedback-icon"></i>' : '<i class="fas fa-times feedback-icon"></i>') : 
+                    '';
+                
+                optionsHTML += `
+                    <div class="${optionClass}" data-option="${index}" data-correct="${isCorrect}">
+                        <span class="option-letter">${String.fromCharCode(65 + index)}</span>
+                        ${option}
+                        ${feedbackIcon}
+                    </div>
+                `;
+            });
+            
+            quizContainer.innerHTML = `
+                <div class="question fade-in">
+                    <div class="question-header">
+                        <div class="question-text">${question.question}</div>
+                        <div class="question-difficulty ${difficultyClass}">
+                            ${difficultyText}
+                        </div>
+                    </div>
+                    <div class="options">
+                        ${optionsHTML}
+                    </div>
+                </div>
+            `;
+            
+            // Adicionar event listeners para as opções (apenas se não estiverem bloqueadas)
+            quizContainer.querySelectorAll('.option').forEach(option => {
+                if (!option.classList.contains('locked')) {
+                    option.addEventListener('click', function() {
+                        if (!answerSelected) {
+                            selectAnswer(parseInt(this.dataset.option));
+                        }
+                    });
+                }
+            });
+            
+            updateNavigation();
+            updateProgressBar();
+            answerSelected = isAnswered; // Se já foi respondida, considerar como selecionada
+        }
+
+        function selectAnswer(answerIndex) {
+            userAnswers[currentQuestionIndex] = answerIndex;
+            answerSelected = true;
+            answeredQuestions.add(currentQuestionIndex); // Marcar pergunta como respondida
+            
+            // Mostrar feedback imediato
+            const question = currentQuestions[currentQuestionIndex];
+            const isCorrect = answerIndex === question.correct;
+            
+            // Atualizar a visualização para mostrar o feedback
+            showCurrentQuestion();
+            
+            // Se a resposta estiver errada, destacar a resposta correta
+            if (!isCorrect) {
+                setTimeout(() => {
+                    const correctOption = quizContainer.querySelector(`.option[data-correct="true"]`);
+                    if (correctOption) {
+                        correctOption.classList.add('correct-answer');
+                        correctOption.classList.add('bounce');
+                    }
+                }, 500);
+            }
+        }
+
+        function updateNavigation() {
+            // Botão anterior sempre habilitado (exceto primeira pergunta)
+            prevBtn.disabled = currentQuestionIndex === 0;
+            
+            if (currentQuestionIndex === currentQuestions.length - 1) {
+                nextBtn.innerHTML = 'Finalizar <i class="fas fa-flag-checkered"></i>';
+            } else {
+                nextBtn.innerHTML = 'Próxima <i class="fas fa-arrow-right"></i>';
+            }
+            
+            // Habilitar próximo apenas se uma resposta foi selecionada
+            nextBtn.disabled = !answerSelected;
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentQuestionIndex + 1) / currentQuestions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function goToNextQuestion() {
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                // Verificar se a próxima pergunta já foi respondida
+                answerSelected = answeredQuestions.has(currentQuestionIndex);
+                showCurrentQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function goToPreviousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                // Verificar se a pergunta anterior já foi respondida
+                answerSelected = answeredQuestions.has(currentQuestionIndex);
+                showCurrentQuestion();
+            }
+        }
+
+        function showResults() {
+            // Calcular pontuação
+            score = 0;
+            correctByDifficulty = { easy: 0, medium: 0, hard: 0 };
+            
+            currentQuestions.forEach((question, index) => {
+                if (userAnswers[index] === question.correct) {
+                    score++;
+                    correctByDifficulty[question.difficulty]++;
+                }
+            });
+            
+            const percentage = (score / currentQuestions.length) * 100;
+            let message = '';
+            let icon = '';
+            
+            if (percentage >= 90) {
+                message = '🎉 Excelente! Você conhece profundamente a vida e transformação de Pedro!';
+                icon = '<i class="fas fa-crown fa-2x" style="color: #f39c12;"></i>';
+            } else if (percentage >= 70) {
+                message = '👏 Muito bom! Você entende bem como Deus transformou os impulsos de Pedro em missão.';
+                icon = '<i class="fas fa-trophy fa-2x" style="color: #3498db;"></i>';
+            } else if (percentage >= 50) {
+                message = '👍 Bom trabalho! Continue aprendendo sobre a transformação que Deus opera em nossas vidas.';
+                icon = '<i class="fas fa-star fa-2x" style="color: #27ae60;"></i>';
+            } else {
+                message = '💡 Estude um pouco mais e tente novamente! A história de Pedro nos ensina muito sobre o poder transformador de Deus.';
+                icon = '<i class="fas fa-book fa-2x" style="color: #e74c3c;"></i>';
+            }
+            
+            // Atualizar estatísticas
+            scoreElement.textContent = `${score}/${currentQuestions.length}`;
+            correctEasyEl.textContent = correctByDifficulty.easy;
+            correctMediumEl.textContent = correctByDifficulty.medium;
+            correctHardEl.textContent = correctByDifficulty.hard;
+            
+            messageElement.innerHTML = `${icon}<div style="margin-top: 15px;">${message}</div>`;
+            
+            // Esconder quiz e mostrar resultados
+            quizSection.style.display = 'none';
+            resultsSection.style.display = 'block';
+        }
+
+        function restartQuiz() {
+            resultsSection.style.display = 'none';
+            quizSection.style.display = 'none';
+            document.querySelector('header').style.padding = '20px 40px 40px 40px';
+            
+            // Resetar variáveis
+            currentQuestions = [];
+            currentQuestionIndex = 0;
+            userAnswers = [];
+            score = 0;
+            correctByDifficulty = { easy: 0, medium: 0, hard: 0 };
+            answerSelected = false;
+            answeredQuestions.clear(); // Limpar perguntas respondidas
+        }
+    </script>
+</body>
+</html>
